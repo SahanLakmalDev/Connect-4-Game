@@ -96,7 +96,7 @@
             </Group>
          </children>
       </Group>
-      <Label layoutX="139.0" layoutY="631.0" styleClass="small" text="Copyright © 2023 DEP. All Rights Reserved. This project is licensed under the MIT license." />
+      <Label layoutX="139.0" layoutY="631.0" styleClass="small" text="Copyright © 2023 Sahan Lakmal. All Rights Reserved. This project is licensed under the MIT license." />
       <Label fx:id="lblStatus" alignment="CENTER" layoutX="41.0" layoutY="116.0" prefHeight="38.0" prefWidth="600.0" text="LET'S PLAY !" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" />
       <Pane fx:id="pneOver" layoutX="39.0" layoutY="167.0" prefHeight="440.0" prefWidth="600.0" visible="false">
          <children>
