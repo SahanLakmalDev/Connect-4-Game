@@ -56,7 +56,16 @@ public class BoardImpl implements Board{
     @Override
     public void updateMove(int col, Piece move) {
         int row = findNextAvailableSpot(col);
-        this.pieces[col][row] = move;
+        if(row != -1){
+            this.pieces[col][row] = move;
+        }
+
+    }
+
+    @Override
+    public void updateMove(int col, int row, Piece move) {
+        pieces[col][row] = move;
+
     }
 
     @Override

@@ -5,13 +5,100 @@ public class AiPlayer extends Player{
         super(board);
     }
     public void movePiece(int col){
-        int randomCol;
-        do{
-            randomCol = (int) (Math.random() * Board.NUM_OF_COLS);
-        }while(!this.board.isLegalMove(randomCol));
-        this.board.updateMove(randomCol, Piece.GREEN);
-        this.board.getBoardUI().update(randomCol, false);
+
+        // Use the minimax method to predict the best move
+        col = this.predictBestMove();
+        updateAndNotify(col);
+
+    }
+
+    private int minimax(int depth, boolean maximizingPlayer){
+//
         Winner winner = this.board.findWinner();
+        if (winner.getWinningPiece() == Piece.GREEN) {
+            return 1;
+        } else if (winner.getWinningPiece() == Piece.BLUE) {
+            return -1;
+        } else if (this.board.existLegalMove() && depth != 2) {
+            int i;
+            int row;
+            int heuristicVal;
+            if (!maximizingPlayer) {
+                for(i = 0; i < 6; ++i) {
+                    if (this.board.isLegalMove(i)) {
+                        row = this.board.findNextAvailableSpot(i);
+                        this.board.updateMove(i, Piece.BLUE);
+                        heuristicVal = this.minimax(depth + 1, true);
+                        this.board.updateMove(i, row, Piece.EMPTY);
+                        if (heuristicVal == -1) {
+                            return heuristicVal;
+                        }
+                    }
+                }
+            } else {
+                for(i = 0; i < 6; ++i) {
+                    if (this.board.isLegalMove(i)) {
+                        row = this.board.findNextAvailableSpot(i);
+                        this.board.updateMove(i, Piece.GREEN);
+                        heuristicVal = this.minimax(depth + 1, false);
+                        this.board.updateMove(i, row, Piece.EMPTY);
+                        if (heuristicVal == 1) {
+                            return heuristicVal;
+                        }
+                    }
+                }
+            }
+
+            return 0;
+        } else {
+            return 0;
+        }
+    }
+
+
+//
+     //Encapsulated method to predict the best move
+    private int predictBestMove(){
+        boolean isUserWinning = false;
+        int tiedColumn = 0;
+
+        int i;
+        for(i = 0; i < 6; ++i) {
+            if (this.board.isLegalMove(i)) {
+                int row = this.board.findNextAvailableSpot(i);
+                this.board.updateMove(i, Piece.GREEN);
+                int heuristicVal = this.minimax(0, false);
+                this.board.updateMove(i, row, Piece.EMPTY);
+                if (heuristicVal == 1) {
+                    return i;
+                }
+
+                if (heuristicVal == -1) {
+                    isUserWinning = true;
+                } else {
+                    tiedColumn = i;
+                }
+            }
+        }
+
+        if (isUserWinning && this.board.isLegalMove(tiedColumn)) {
+            return tiedColumn;
+        } else {
+            boolean var6 = false;
+
+            do {
+                i = (int)(Math.random() * 6.0D);
+            } while(!this.board.isLegalMove(i));
+
+            return i;
+        }
+    }
+//
+
+    private void updateAndNotify(int col) {
+        board.updateMove(col, Piece.GREEN);
+        board.getBoardUI().update(col, false);
+        Winner winner = board.findWinner();
         if(winner.getWinningPiece() != Piece.EMPTY){
             this.board.getBoardUI().notifyWinner(winner);
         }else{
